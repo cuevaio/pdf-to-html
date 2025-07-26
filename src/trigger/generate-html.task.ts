@@ -2,61 +2,58 @@ import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { schemaTask, logger, metadata } from "@trigger.dev/sdk/v3";
 import { z } from "zod";
-import { promises } from "node:fs";
+import { generateHtmlPrompt } from "@/prompts/generate-html";
 
 export const generateHtmlTask = schemaTask({
-	id: "generate-html",
-	schema: z.object({
-		pages: z.array(
-			z.object({
-				pageIndex: z.number(),
-				imageUrl: z.string(),
-				markdown: z.string(),
-			}),
-		),
-	}),
-	run: async (payload) => {
-		const { pages } = payload;
+  id: "generate-html",
+  schema: z.object({
+    pages: z.array(
+      z.object({
+        pageIndex: z.number(),
+        imageUrl: z.string(),
+        markdown: z.string(),
+      }),
+    ),
+  }),
+  run: async (payload) => {
+    const { pages } = payload;
 
-		const systemPrompt = await promises.readFile(
-			"src/prompts/generate-html.md",
-			"utf-8",
-		);
+    const systemPrompt = generateHtmlPrompt;
 
-		logger.info(systemPrompt);
+    logger.info(systemPrompt);
 
-		const result = streamText({
-			model: openai("gpt-4.1"),
-			maxTokens: 32000,
-			messages: [
-				{
-					role: "system",
-					content: systemPrompt,
-				},
-				{
-					role: "user",
-					content: pages.flatMap((item) => [
-						{
-							type: "text",
-							text: item.markdown,
-						},
-						{
-							type: "image",
-							image: item.imageUrl,
-						},
-					]),
-				},
-			],
-		});
+    const result = streamText({
+      model: openai("gpt-4.1"),
+      maxTokens: 32000,
+      messages: [
+        {
+          role: "system",
+          content: systemPrompt,
+        },
+        {
+          role: "user",
+          content: pages.flatMap((item) => [
+            {
+              type: "text",
+              text: item.markdown,
+            },
+            {
+              type: "image",
+              image: item.imageUrl,
+            },
+          ]),
+        },
+      ],
+    });
 
-		const stream = await metadata.stream("openai", result.textStream);
+    const stream = await metadata.stream("openai", result.textStream);
 
-		let text = "";
+    let text = "";
 
-		for await (const chunk of stream) {
-			text += chunk;
-		}
+    for await (const chunk of stream) {
+      text += chunk;
+    }
 
-		return text;
-	},
+    return text;
+  },
 });

@@ -1,103 +1,168 @@
-import Image from "next/image";
+"use client";
+
+import React from "react";
+import { useRouter } from "next/navigation";
+import { toast, Toaster } from "sonner";
+import { Link, Upload } from "lucide-react";
+
+import { PDFUpload } from "@/components/pdf-upload";
+import { triggerProcessPdfTaskAction } from "@/actions/trigger-process-pdf-task.action";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [inputMode, setInputMode] = React.useState<"url" | "upload">("url");
+  const [uploadedFileUrl, setUploadedFileUrl] = React.useState<string>("");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const [state, formAction, isPending] = React.useActionState(
+    triggerProcessPdfTaskAction,
+    {
+      input: {
+        url: "",
+      },
+      output: {
+        success: false,
+        error: "",
+      },
+    },
+  );
+
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (state.output.success) {
+      router.push(
+        `/pdf/${state.output.data.id}?publicAccessToken=${state.output.data.publicAccessToken}`,
+      );
+    }
+  }, [state, router]);
+
+  React.useEffect(() => {
+    if (state.output.success === false && state.output.error) {
+      toast.error(state.output.error);
+    }
+  }, [state]);
+
+  const handleUploadComplete = (url: string) => {
+    setUploadedFileUrl(url);
+    toast.success("PDF uploaded successfully! Click 'Convert PDF' to process.");
+  };
+
+  const isProcessing =
+    isPending || (inputMode === "upload" && !uploadedFileUrl);
+
+  return (
+    <>
+      <Toaster position="top-center" />
+      <div className="min-h-screen bg-background text-foreground font-mono">
+        <div className="container mx-auto px-4 py-16">
+          <div className="max-w-2xl mx-auto">
+            {/* Page Title */}
+            <div className="text-center mb-16">
+              <p className="text-lg opacity-80 font-sans">
+                Convert PDF documents to clean HTML
+              </p>
+            </div>
+
+            {/* Input Mode Toggle */}
+            <div className="mb-8">
+              <div className="flex border-2 border-foreground">
+                <button
+                  type="button"
+                  onClick={() => setInputMode("url")}
+                  className={`flex-1 py-3 px-4 font-bold text-sm tracking-wide uppercase transition-colors ${
+                    inputMode === "url"
+                      ? "bg-foreground text-background"
+                      : "bg-background text-foreground hover:bg-foreground/10"
+                  }`}
+                >
+                  <Link className="w-4 h-4 inline mr-2" />
+                  PDF URL
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInputMode("upload")}
+                  className={`flex-1 py-3 px-4 font-bold text-sm tracking-wide uppercase transition-colors ${
+                    inputMode === "upload"
+                      ? "bg-foreground text-background"
+                      : "bg-background text-foreground hover:bg-foreground/10"
+                  }`}
+                >
+                  <Upload className="w-4 h-4 inline mr-2" />
+                  Upload File
+                </button>
+              </div>
+            </div>
+
+            {/* Main Form */}
+            <div className="border-2 border-foreground bg-background shadow-[8px_8px_0px_0px] shadow-foreground/20">
+              <div className="p-8">
+                <form action={formAction} className="space-y-6">
+                  {inputMode === "url" ? (
+                    <div>
+                      <label
+                        htmlFor="pdf-url"
+                        className="block text-sm font-bold mb-3 tracking-wide uppercase"
+                      >
+                        PDF URL
+                      </label>
+                      <input
+                        id="pdf-url"
+                        type="url"
+                        name="url"
+                        placeholder="https://example.com/document.pdf"
+                        className="w-full px-4 py-3 border-2 border-foreground bg-background text-foreground font-mono text-lg focus:outline-none focus:ring-0 focus:border-foreground placeholder:text-foreground/50"
+                        disabled={isPending}
+                        required
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <PDFUpload
+                        onUploadComplete={handleUploadComplete}
+                        disabled={isPending}
+                      />
+                      {uploadedFileUrl && (
+                        <p className="mt-2 text-xs text-foreground/60 font-mono">
+                          ✓ File uploaded successfully
+                        </p>
+                      )}
+                      <input type="hidden" name="url" value={uploadedFileUrl} />
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={isProcessing}
+                    className="w-full py-4 border-2 border-foreground bg-foreground text-background font-bold text-lg tracking-wide uppercase transition-all duration-200 hover:bg-background hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-foreground disabled:hover:text-background"
+                  >
+                    {isPending ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <span className="animate-pulse">●</span>
+                        Processing...
+                        <span className="animate-pulse">●</span>
+                      </span>
+                    ) : inputMode === "upload" && !uploadedFileUrl ? (
+                      "Upload PDF First"
+                    ) : (
+                      "Convert PDF"
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            {/* Footer Info */}
+            <div className="mt-12 text-center">
+              <div className="inline-block border border-foreground/30 px-4 py-2">
+                <p className="text-sm opacity-60 font-sans">
+                  {inputMode === "url"
+                    ? "Supports public PDF URLs • Max 32MB"
+                    : "Upload PDF files • Max 32MB"}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 }

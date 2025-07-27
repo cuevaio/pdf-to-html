@@ -9,6 +9,7 @@ import {
   useRealtimeRunWithStreams,
 } from "@trigger.dev/react-hooks";
 import { useParams, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export default function Page() {
@@ -112,6 +113,7 @@ export default function Page() {
             <HTMLViewer
               run_id={htmlRun.id}
               publicAccessToken={searchParams.get("publicAccessToken") ?? ""}
+              pdfId={params.id}
             />
           </div>
         </div>
@@ -138,9 +140,11 @@ function PDFViewer({ url }: { url: string }) {
 function HTMLViewer({
   run_id,
   publicAccessToken,
+  pdfId,
 }: {
   run_id: string;
   publicAccessToken: string;
+  pdfId: string;
 }) {
   const { streams, run } = useRealtimeRunWithStreams<typeof generateHtmlTask>(
     run_id,
@@ -183,7 +187,17 @@ function HTMLViewer({
           </TabsList>
         </div>
         
-        <TabsContent value="rendered" className="flex-1 m-0 p-0 overflow-hidden">
+        <TabsContent value="rendered" className="flex-1 m-0 p-0 overflow-hidden relative">
+          {htmlContent && (
+            <div className="absolute top-2 right-2 z-10">
+              <Link
+                href={`/view/${pdfId}`}
+                className="px-3 py-1 bg-white border-2 border-black text-black font-mono text-xs uppercase tracking-wider hover:bg-black hover:text-white transition-colors"
+              >
+                VIEW FULL PAGE
+              </Link>
+            </div>
+          )}
           <div className="w-full h-full overflow-auto bg-white">
             <iframe
               key={run?.output ? "final" : "streaming"} // Only reload when switching from streaming to final

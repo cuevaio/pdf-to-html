@@ -17,6 +17,7 @@
     "@trigger.dev/react-hooks": "^3.3.17",
     "@trigger.dev/sdk": "^3.3.17",
     "@uploadthing/react": "^7.3.2",
+    "@upstash/redis": "^1.35.1",
     "ai": "^4.3.19",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

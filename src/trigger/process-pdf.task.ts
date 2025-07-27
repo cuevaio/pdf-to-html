@@ -1,9 +1,12 @@
 import { schemaTask, batch, logger } from "@trigger.dev/sdk/v3";
 import { z } from "zod";
+import { UTApi } from "uploadthing/server";
+
 import type { getScreenshotsTask } from "./get-screenshots.task";
 import { generateHtmlTask } from "./generate-html.task";
 import type { getMarkdownTask } from "./get-markdown.task";
-import { UTApi } from "uploadthing/server";
+
+import { redis } from "@/lib/redis";
 
 const utapi = new UTApi();
 
@@ -80,6 +83,10 @@ export const processPdfTask = schemaTask({
       // biome-ignore lint/style/noNonNullAssertion: screenshot.url is not null
       screenshots.map((screenshot) => screenshot.url.split("/").pop()!),
     );
+
+    if (html.ok) {
+      await redis.set(ctx.run.tags[0], html.output);
+    }
 
     return html;
   },

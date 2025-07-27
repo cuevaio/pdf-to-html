@@ -169,7 +169,7 @@ function HTMLViewer({
 
     return (
     <div className="w-full h-full bg-background text-foreground flex flex-col overflow-hidden">
-      <Tabs defaultValue="rendered" className="flex flex-col h-full overflow-hidden">
+      <Tabs defaultValue="code" className="flex flex-col h-full overflow-hidden">
         <div className="border-b-2 border-foreground p-2 flex-shrink-0">
           <TabsList className="bg-background border-2 border-foreground">
             <TabsTrigger 

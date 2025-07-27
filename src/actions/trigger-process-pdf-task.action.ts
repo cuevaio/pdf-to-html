@@ -1,9 +1,9 @@
 "use server";
 
-import { z } from "zod";
-import { processPdfTask } from "@/trigger/process-pdf.task";
-import { nanoid } from "@/lib/nanoid";
 import { auth } from "@trigger.dev/sdk/v3";
+import { z } from "zod";
+import { nanoid } from "@/lib/nanoid";
+import { processPdfTask } from "@/trigger/process-pdf.task";
 
 export type TriggerProcessPDFTaskActionState = {
   input: {

@@ -1,12 +1,11 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { toast, Toaster } from "sonner";
 import { Link, Upload } from "lucide-react";
-
-import { PDFUpload } from "@/components/pdf-upload";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { Toaster, toast } from "sonner";
 import { triggerProcessPdfTaskAction } from "@/actions/trigger-process-pdf-task.action";
+import { PDFUpload } from "@/components/pdf-upload";
 
 export default function Home() {
   const [inputMode, setInputMode] = React.useState<"url" | "upload">("url");

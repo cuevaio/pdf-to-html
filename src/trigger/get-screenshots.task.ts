@@ -1,4 +1,4 @@
-import { schemaTask, logger } from "@trigger.dev/sdk/v3";
+import { logger, schemaTask } from "@trigger.dev/sdk/v3";
 import { pdf } from "pdf-to-img";
 import { UTApi, UTFile } from "uploadthing/server";
 import { z } from "zod";

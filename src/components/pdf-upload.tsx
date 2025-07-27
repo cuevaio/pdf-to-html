@@ -1,7 +1,7 @@
 "use client";
 
+import { FileText, Upload } from "lucide-react";
 import React from "react";
-import { Upload, X, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { UploadThingError } from "uploadthing/server";
 import { uploadFiles } from "@/lib/uploadthing";
@@ -18,21 +18,22 @@ export function PDFUpload({ onUploadComplete, disabled }: PDFUploadProps) {
 
   const handleFiles = async (files: FileList | File[]) => {
     const fileArray = Array.from(files);
-    const pdfFile = fileArray.find(file => file.type === "application/pdf");
-    
+    const pdfFile = fileArray.find((file) => file.type === "application/pdf");
+
     if (!pdfFile) {
       toast.error("Please select a PDF file");
       return;
     }
 
-    if (pdfFile.size > 32 * 1024 * 1024) { // 32MB limit
+    if (pdfFile.size > 32 * 1024 * 1024) {
+      // 32MB limit
       toast.error("File size must be less than 32MB");
       return;
     }
 
     try {
       setIsUploading(true);
-      
+
       const res = await uploadFiles("pdfUploader", {
         files: [pdfFile],
       });
@@ -43,17 +44,18 @@ export function PDFUpload({ onUploadComplete, disabled }: PDFUploadProps) {
       }
     } catch (error) {
       console.error("Upload error:", error);
-      
+
       if (error instanceof UploadThingError) {
-        const errorMessage = error.data && "error" in error.data 
-          ? error.data.error 
-          : "Upload failed";
+        const errorMessage =
+          error.data && "error" in error.data
+            ? error.data.error
+            : "Upload failed";
         toast.error(errorMessage);
         return;
       }
 
       toast.error(
-        error instanceof Error ? error.message : "An unknown error occurred"
+        error instanceof Error ? error.message : "An unknown error occurred",
       );
     } finally {
       setIsUploading(false);
@@ -74,9 +76,9 @@ export function PDFUpload({ onUploadComplete, disabled }: PDFUploadProps) {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (disabled || isUploading) return;
-    
+
     if (e.dataTransfer.files) {
       handleFiles(e.dataTransfer.files);
     }
@@ -85,7 +87,7 @@ export function PDFUpload({ onUploadComplete, disabled }: PDFUploadProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (disabled || isUploading) return;
-    
+
     if (e.target.files) {
       handleFiles(e.target.files);
     }
@@ -127,7 +129,7 @@ export function PDFUpload({ onUploadComplete, disabled }: PDFUploadProps) {
         disabled={disabled || isUploading}
         className="sr-only"
       />
-      
+
       <div className="flex flex-col items-center justify-center py-8 px-6 text-center">
         {isUploading ? (
           <>
@@ -157,4 +159,4 @@ export function PDFUpload({ onUploadComplete, disabled }: PDFUploadProps) {
       </div>
     </button>
   );
-} 
+}

@@ -1,16 +1,16 @@
 "use client";
 
-import type { generateHtmlTask } from "@/trigger/generate-html.task";
-import type { getMarkdownTask } from "@/trigger/get-markdown.task";
-import type { getScreenshotsTask } from "@/trigger/get-screenshots.task";
-import type { processPdfTask } from "@/trigger/process-pdf.task";
 import {
   useRealtimeRunsWithTag,
   useRealtimeRunWithStreams,
 } from "@trigger.dev/react-hooks";
-import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useParams, useSearchParams } from "next/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { generateHtmlTask } from "@/trigger/generate-html.task";
+import type { getMarkdownTask } from "@/trigger/get-markdown.task";
+import type { getScreenshotsTask } from "@/trigger/get-screenshots.task";
+import type { processPdfTask } from "@/trigger/process-pdf.task";
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -167,27 +167,33 @@ function HTMLViewer({
     );
   }
 
-    return (
+  return (
     <div className="w-full h-full bg-background text-foreground flex flex-col overflow-hidden">
-      <Tabs defaultValue="code" className="flex flex-col h-full overflow-hidden">
+      <Tabs
+        defaultValue="code"
+        className="flex flex-col h-full overflow-hidden"
+      >
         <div className="border-b-2 border-foreground p-2 flex-shrink-0">
           <TabsList className="bg-background border-2 border-foreground">
-            <TabsTrigger 
-              value="rendered" 
+            <TabsTrigger
+              value="rendered"
               className="data-[state=active]:bg-foreground data-[state=active]:text-background border border-foreground mr-1 font-mono text-xs uppercase tracking-wider"
             >
               RENDERED
             </TabsTrigger>
-            <TabsTrigger 
-              value="code" 
+            <TabsTrigger
+              value="code"
               className="data-[state=active]:bg-foreground data-[state=active]:text-background border border-foreground font-mono text-xs uppercase tracking-wider"
             >
               CODE
             </TabsTrigger>
           </TabsList>
         </div>
-        
-        <TabsContent value="rendered" className="flex-1 m-0 p-0 overflow-hidden relative">
+
+        <TabsContent
+          value="rendered"
+          className="flex-1 m-0 p-0 overflow-hidden relative"
+        >
           {htmlContent && (
             <div className="absolute top-2 right-2 z-10">
               <Link
@@ -235,25 +241,30 @@ function HTMLViewer({
             />
           </div>
         </TabsContent>
-        
+
         <TabsContent value="code" className="flex-1 m-0 p-0 overflow-hidden">
           <div className="w-full h-full bg-background relative overflow-hidden">
             <button
               type="button"
               onClick={() => {
-                navigator.clipboard.writeText(htmlContent).then(() => {
-                  // Simple visual feedback - could be enhanced with a toast
-                  const button = document.querySelector('.copy-button') as HTMLButtonElement;
-                  if (button) {
-                    const originalText = button.textContent;
-                    button.textContent = 'COPIED!';
-                    setTimeout(() => {
-                      button.textContent = originalText;
-                    }, 1000);
-                  }
-                }).catch((err) => {
-                  console.error('Failed to copy to clipboard:', err);
-                });
+                navigator.clipboard
+                  .writeText(htmlContent)
+                  .then(() => {
+                    // Simple visual feedback - could be enhanced with a toast
+                    const button = document.querySelector(
+                      ".copy-button",
+                    ) as HTMLButtonElement;
+                    if (button) {
+                      const originalText = button.textContent;
+                      button.textContent = "COPIED!";
+                      setTimeout(() => {
+                        button.textContent = originalText;
+                      }, 1000);
+                    }
+                  })
+                  .catch((err) => {
+                    console.error("Failed to copy to clipboard:", err);
+                  });
               }}
               className="copy-button absolute top-2 right-2 z-10 px-3 py-1 bg-background border-2 border-foreground text-foreground font-mono text-xs uppercase tracking-wider hover:bg-foreground hover:text-background transition-colors"
             >

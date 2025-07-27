@@ -7,8 +7,8 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           {/* Logo/Title */}
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="flex items-center gap-2 group transition-all duration-200"
           >
             <div className="border-2 border-foreground px-3 py-1 bg-background group-hover:bg-foreground group-hover:text-background transition-all duration-200">
@@ -21,13 +21,13 @@ export function Header() {
           {/* Navigation & Controls */}
           <div className="flex items-center gap-4">
             <nav className="hidden md:flex items-center gap-6">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="font-mono text-sm font-bold tracking-wide uppercase opacity-80 hover:opacity-100 transition-opacity duration-200"
               >
                 Convert
               </Link>
-              <Link 
+              <Link
                 href="https://github.com/cuevaio/pdf-to-html"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -49,7 +49,7 @@ export function Header() {
                 </svg>
               </Link>
             </nav>
-            
+
             <div className="border-l-2 border-foreground pl-4">
               <ThemeToggle />
             </div>
@@ -58,4 +58,4 @@ export function Header() {
       </div>
     </header>
   );
-} 
+}

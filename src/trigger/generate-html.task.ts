@@ -1,6 +1,6 @@
-import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { schemaTask, logger, metadata } from "@trigger.dev/sdk/v3";
+import { logger, metadata, schemaTask } from "@trigger.dev/sdk/v3";
+import { streamText } from "ai";
 import { z } from "zod";
 import { generateHtmlPrompt } from "@/prompts/generate-html";
 

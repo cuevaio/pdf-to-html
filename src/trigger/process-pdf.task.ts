@@ -1,12 +1,10 @@
-import { schemaTask, batch, logger } from "@trigger.dev/sdk/v3";
-import { z } from "zod";
+import { batch, logger, schemaTask } from "@trigger.dev/sdk/v3";
 import { UTApi } from "uploadthing/server";
-
-import type { getScreenshotsTask } from "./get-screenshots.task";
+import { z } from "zod";
+import { redis } from "@/lib/redis";
 import { generateHtmlTask } from "./generate-html.task";
 import type { getMarkdownTask } from "./get-markdown.task";
-
-import { redis } from "@/lib/redis";
+import type { getScreenshotsTask } from "./get-screenshots.task";
 
 const utapi = new UTApi();
 

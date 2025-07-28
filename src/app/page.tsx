@@ -154,8 +154,8 @@ export default function Home() {
               <div className="inline-block border border-foreground/30 px-4 py-2">
                 <p className="text-sm opacity-60 font-sans">
                   {inputMode === "url"
-                    ? "Supports public PDF URLs • Max 32MB"
-                    : "Upload PDF files • Max 32MB"}
+                    ? "Supports public PDF URLs • Max 32MB • Max 5 pages"
+                    : "Upload PDF files • Max 32MB • Max 5 pages"}
                 </p>
               </div>
             </div>

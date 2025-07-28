@@ -51,6 +51,12 @@ export const processPdfTask = schemaTask({
         } else if (result.taskIdentifier === "get-markdown") {
           markdown = result.output;
         }
+      } else {
+        // Handle failed subtasks and propagate their error messages
+        const errorMessage = typeof result.error === 'string' 
+          ? result.error 
+          : `Task ${result.taskIdentifier} failed`;
+        throw new Error(errorMessage);
       }
     }
     logger.log(JSON.stringify(screenshots, null, 2));

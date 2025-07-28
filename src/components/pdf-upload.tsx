@@ -4,6 +4,7 @@ import { FileText, Upload } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 import { UploadThingError } from "uploadthing/server";
+import { PDFDocument } from "pdf-lib";
 import { uploadFiles } from "@/lib/uploadthing";
 
 interface PDFUploadProps {
@@ -15,6 +16,27 @@ export function PDFUpload({ onUploadComplete, disabled }: PDFUploadProps) {
   const [isUploading, setIsUploading] = React.useState(false);
   const [dragActive, setDragActive] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const validatePdfPageCount = async (file: File): Promise<boolean> => {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const pageCount = pdfDoc.getPageCount();
+
+      if (pageCount > 5) {
+        toast.error(
+          `PDF has ${pageCount} pages. Maximum of 5 pages allowed. Please use a shorter PDF document.`
+        );
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error validating PDF:", error);
+      toast.error("Error reading PDF file. Please ensure it's a valid PDF.");
+      return false;
+    }
+  };
 
   const handleFiles = async (files: FileList | File[]) => {
     const fileArray = Array.from(files);
@@ -28,6 +50,12 @@ export function PDFUpload({ onUploadComplete, disabled }: PDFUploadProps) {
     if (pdfFile.size > 32 * 1024 * 1024) {
       // 32MB limit
       toast.error("File size must be less than 32MB");
+      return;
+    }
+
+    // Validate page count before uploading
+    const isValidPageCount = await validatePdfPageCount(pdfFile);
+    if (!isValidPageCount) {
       return;
     }
 
@@ -152,7 +180,7 @@ export function PDFUpload({ onUploadComplete, disabled }: PDFUploadProps) {
               Drop your PDF here or click to browse
             </p>
             <p className="text-xs text-foreground/40 font-mono mt-2">
-              Max 32MB • PDF files only
+              Max 32MB • Max 5 pages • PDF files only
             </p>
           </>
         )}

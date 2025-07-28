@@ -32,6 +32,15 @@ export const getScreenshotsTask = schemaTask({
     // Convert PDF to images
     const document = await pdf(pdfData, { scale });
 
+    // Validate page count - maximum 5 pages allowed
+    if (document.length > 5) {
+      throw new Error(
+        `PDF has ${document.length} pages. Maximum of 5 pages allowed. Please use a shorter PDF document.`,
+      );
+    }
+
+    logger.log(`PDF has ${document.length} pages (within the 5-page limit)`);
+
     let counter = 0;
     const filesToUpload: UTFile[] = [];
 

@@ -1,36 +1,146 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PDF to HTML Converter
 
-## Getting Started
+A modern web application that converts PDF documents into clean, semantic HTML. Built with Next.js 15 and powered by AI for intelligent content extraction and formatting.
 
-First, run the development server:
+## ✨ Features
 
+- **Dual Input Methods**: Upload PDF files or provide URLs to publicly accessible PDFs
+- **AI-Powered Conversion**: Uses advanced AI models to extract and structure content intelligently
+- **Background Processing**: Leverages Trigger.dev for reliable, scalable PDF processing jobs
+- **Modern UI**: Clean, responsive interface with dark/light theme support
+- **Real-time Updates**: Live processing status and seamless user experience
+- **Multiple Output Formats**: Generates screenshots, markdown, and clean HTML from PDFs
+- **Large File Support**: Handles PDFs up to 32MB in size
+
+## 🛠 Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
+- **Background Jobs**: Trigger.dev for reliable PDF processing
+- **File Storage**: UploadThing for secure file uploads
+- **Database**: Upstash Redis for caching and session management
+- **AI Integration**: OpenAI and Mistral AI for content processing
+- **PDF Processing**: pdf-to-img for screenshot generation
+- **Styling**: Tailwind CSS with custom theming and animations
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ or Bun
+- Redis instance (Upstash recommended)
+- Trigger.dev account
+- UploadThing account
+- OpenAI or Mistral AI API key
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd pdf-to-html
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+bun install
+# or
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Fill in your environment variables:
+- `UPSTASH_REDIS_REST_URL` - Your Upstash Redis URL
+- `UPSTASH_REDIS_REST_TOKEN` - Your Upstash Redis token
+- `TRIGGER_SECRET_KEY` - Your Trigger.dev secret key
+- `UPLOADTHING_SECRET` - Your UploadThing secret
+- `UPLOADTHING_APP_ID` - Your UploadThing app ID
+- `OPENAI_API_KEY` - Your OpenAI API key (optional)
+- `MISTRAL_API_KEY` - Your Mistral AI API key (optional)
 
-## Learn More
+4. Run the development server:
+```bash
+bun dev
+# or
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. Start the Trigger.dev development server (in a separate terminal):
+```bash
+bunx trigger.dev@latest dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📖 Usage
 
-## Deploy on Vercel
+1. **Choose Input Method**: Select either "PDF URL" or "Upload File"
+2. **Provide PDF**: Enter a public PDF URL or upload a file (max 32MB)
+3. **Convert**: Click "Convert PDF" to start the processing
+4. **View Results**: The app will process your PDF and display the converted HTML
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🏗 Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── actions/          # Server actions
+├── app/             # Next.js app router pages
+├── components/      # React components
+├── lib/            # Utility functions and configurations
+├── prompts/        # AI prompts for content processing
+└── trigger/        # Background job definitions
+```
+
+## 🔧 Development
+
+### Available Scripts
+
+- `bun dev` - Start development server with Turbopack
+- `bun build` - Build for production
+- `bun start` - Start production server
+- `bun lint` - Run ESLint
+- `bun biome` - Run Biome formatter and linter
+
+### Code Quality
+
+This project uses:
+- **Biome** for code formatting and linting
+- **TypeScript** for type safety
+- **Tailwind CSS** for styling
+- **ESLint** for additional linting
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+The easiest way to deploy is using the [Vercel Platform](https://vercel.com/new):
+
+1. Connect your repository to Vercel
+2. Configure environment variables
+3. Deploy automatically on every push
+
+### Other Platforms
+
+This is a standard Next.js application and can be deployed to any platform that supports Node.js applications.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org) for the amazing React framework
+- [Trigger.dev](https://trigger.dev) for reliable background job processing
+- [UploadThing](https://uploadthing.com) for seamless file uploads
+- [Tailwind CSS](https://tailwindcss.com) for utility-first styling
